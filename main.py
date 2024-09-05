@@ -16,3 +16,17 @@ if not os.path.exists(destination_file):
     print(f"Tệp đã được sao chép vào {destination_file}")
 else:
     print(f"Tệp đã tồn tại trong {destination_file}")
+
+try:
+    import requests
+except ImportError:
+    print("Module 'requests' chưa được cài đặt. Đang cài đặt...")
+    # Cài đặt requests nếu chưa có
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "requests"])
+    
+    # Thử import lại sau khi cài đặt
+    try:
+        import requests
+        print("Cài đặt và import 'requests' thành công!")
+    except ImportError:
+        print("Cài đặt không thành công.")
