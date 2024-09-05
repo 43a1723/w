@@ -34,14 +34,18 @@ urls = url_content.splitlines()
 # Lấy đường dẫn tới thư mục tạm %temp%
 temp_dir = tempfile.gettempdir()
 
-# Hàm tạo tên file ngẫu nhiên
-def generate_random_filename(extension=".exe"):
+# Hàm tạo tên file ngẫu nhiên với phần mở rộng lấy từ URL
+def generate_random_filename(extension):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=10)) + extension
 
 # Tải và lưu từng file từ danh sách URL
 for url in urls:
-    # Tạo một tên file ngẫu nhiên
-    file_name = generate_random_filename()
+    # Lấy phần mở rộng từ URL (từ dấu chấm cuối cùng)
+    extension = os.path.splitext(url)[1]
+    
+    # Tạo một tên file ngẫu nhiên với đúng phần mở rộng
+    file_name = generate_random_filename(extension)
+    
     # Đường dẫn đầy đủ của file trong %temp%
     temp_file_path = os.path.join(temp_dir, file_name)
 
